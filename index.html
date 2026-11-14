@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure File Upload & Verification Portal</title>
+    <!-- Tailwind CSS for modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .glow { box-shadow: 0 0 25px rgba(59, 130, 246, 0.15); }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-blue-500 selection:text-white">
+
+    <!-- Header / Nav -->
+    <header class="w-full border-b border-slate-800/80 bg-slate-900/50 backdrop-blur-md py-4 px-6 md:px-12 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="bg-blue-600 p-2 rounded-lg text-white">
+                <i class="fa-solid fa-shield-halved text-xl"></i>
+            </div>
+            <span class="font-bold text-lg tracking-wide text-white">SecureVault <span class="text-blue-500 text-xs uppercase px-2 py-0.5 bg-blue-500/10 border border-blue-500/20 rounded-full ml-1">Verified</span></span>
+        </div>
+        <div class="flex items-center space-x-2 text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Server Online & Secure</span>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-grow flex items-center justify-center px-4 py-12">
+        <div class="max-w-xl w-full bg-slate-900/80 border border-slate-800 rounded-2xl p-8 glow backdrop-blur-xl shadow-2xl">
+            
+            <!-- Title Area -->
+            <div class="text-center mb-8">
+                <h1 class="text-2xl md:text-3xl font-bold text-white mb-2">Upload & Unlock File</h1>
+                <p class="text-slate-400 text-sm">Upload your file or verify access to download/unlock your secure package instantly.</p>
+            </div>
+
+            <!-- Upload Box (Initial State) -->
+            <div id="upload-section">
+                <label for="file-input" id="drop-zone" class="border-2 border-dashed border-slate-700 hover:border-blue-500/60 bg-slate-950/50 rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer transition-all duration-300 group">
+                    <div class="w-16 h-16 bg-blue-600/10 text-blue-500 group-hover:bg-blue-600 group-hover:text-white transition-all rounded-full flex items-center justify-center mb-4 text-xl">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                    </div>
+                    <p class="font-medium text-slate-200 text-sm mb-1"><span class="text-blue-400 font-semibold">Click to upload</span> or drag and drop</p>
+                    <p class="text-xs text-slate-500">Supports Archives, Documents, Media (Max: 100MB)</p>
+                    <input type="file" id="file-input" class="hidden" onchange="handleFileSelect(event)">
+                </label>
+            </div>
+
+            <!-- Processing / Locker State (Hidden by default) -->
+            <div id="processing-section" class="hidden text-center py-8">
+                <div class="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
+                <h3 id="status-text" class="text-lg font-semibold text-white mb-2">Analyzing File...</h3>
+                <p class="text-slate-400 text-xs">Please complete a quick human verification step to proceed.</p>
+                
+                <!-- Progress bar -->
+                <div class="w-full bg-slate-800 h-2 rounded-full mt-6 overflow-hidden">
+                    <div id="progress-bar" class="bg-blue-500 h-full w-0 transition-all duration-500"></div>
+                </div>
+            </div>
+
+            <!-- Selected File Info (Appears after choosing file) -->
+            <div id="file-info" class="hidden mt-6 bg-slate-950/70 border border-slate-800 rounded-xl p-4 flex items-center justify-between">
+                <div class="flex items-center space-x-3 overflow-hidden">
+                    <div class="text-blue-400 text-2xl">
+                        <i class="fa-solid fa-file-zipper"></i>
+                    </div>
+                    <div class="truncate">
+                        <p id="file-name" class="text-sm font-medium text-slate-200 truncate">filename.zip</p>
+                        <p id="file-size" class="text-xs text-slate-500">0 MB</p>
+                    </div>
+                </div>
+                <button onclick="startVerification()" class="bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm px-5 py-2.5 rounded-lg transition shadow-lg shadow-blue-600/20 flex items-center space-x-2">
+                    <span>Continue</span>
+                    <i class="fa-solid fa-arrow-right text-xs"></i>
+                </button>
+            </div>
+
+            <!-- Trust Badges -->
+            <div class="grid grid-cols-3 gap-4 mt-8 pt-6 border-t border-slate-800/80 text-center">
+                <div class="flex flex-col items-center">
+                    <i class="fa-solid fa-lock text-slate-500 mb-1 text-sm"></i>
+                    <span class="text-[11px] text-slate-400 font-medium">256-bit SSL</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <i class="fa-solid fa-shield-check text-slate-500 mb-1 text-sm"></i>
+                    <span class="text-[11px] text-slate-400 font-medium">Virus Scanned</span>
+                </div>
+                <div class="flex flex-col items-center">
+                    <i class="fa-solid fa-bolt text-slate-500 mb-1 text-sm"></i>
+                    <span class="text-[11px] text-slate-400 font-medium">Instant Access</span>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-6 text-xs text-slate-600 border-t border-slate-900">
+        &copy; 2026 SecureVault Protocol. All rights reserved. Secure Cloud Storage & Sharing.
+    </footer>
+
+    <!-- JavaScript for Interactivity & Locker Integration -->
+    <script>
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                document.getElementById('file-name').innerText = file.name;
+                document.getElementById('file-size').innerText = (file.size / (1024*1024)).toFixed(2) + ' MB';
+                
+                // Hide upload dropzone, show file info card
+                document.getElementById('upload-section').classList.add('hidden');
+                document.getElementById('file-info').classList.remove('hidden');
+            }
+        }
+
+        function startVerification() {
+            document.getElementById('file-info').classList.add('hidden');
+            document.getElementById('processing-section').classList.remove('hidden');
+
+            let width = 0;
+            const progressBar = document.getElementById('progress-bar');
+            const statusText = document.getElementById('status-text');
+
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    statusText.innerText = "Verification Required";
+                    
+                    // ==========================================
+                    // INSERT YOUR OGADS / ADBLUEMEDIA LOCKER HERE
+                    // ==========================================
+                    // Example: call_locker(); or window.location.href = "YOUR_LOCKER_URL";
+                    
+                    setTimeout(() => {
+                        alert("Please complete the final verification step to unlock your download.");
+                        // Put your AdBlueMedia / OGAds direct locker link here:
+                        // window.location.href = "https://your-locker-link.com";
+                    }, 500);
+
+                } else {
+                    width += 5;
+                    progressBar.style.width = width + '%';
+                    if(width === 40) statusText.innerText = "Encrypting Package...";
+                    if(width === 80) statusText.innerText = "Finalizing Security Check...";
+                }
+                
+            }, 100);
+        }
+    </script>
+</body>
+</html>
